@@ -1,0 +1,25 @@
+# Configuration for teacher-student training
+
+# Paths
+data_dir: './data'
+checkpoint_dir: './checkpoints/student'
+log_dir: './logs/student'
+teacher_weights: null  # Set via command line arg
+
+# Training parameters
+batch_size: 16
+num_epochs: 100
+learning_rate: 0.0001
+save_every: 5
+visualize_every: 5
+num_workers: 4
+
+# Loss weights
+lambda_ssi: 1.0       # Scale-shift invariant loss weight (ground truth)
+lambda_teacher: 0.5    # Teacher-student loss weight
+lambda_gradient: 0.5   # Gradient matching loss weight
+
+# Loss parameters
+ssi_alpha: 0.5         # Scale-shift invariant loss alpha parameter
+ssi_scales: 4          # Number of scales for multi-scale SSI loss
+gradient_scales: 4     # Number of scales for gradient matching loss

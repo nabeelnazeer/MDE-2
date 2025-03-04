@@ -1,0 +1,48 @@
+# Configuration for training with Virtual KITTI 2.0 dataset
+
+# Model parameters
+model:
+  encoder_type: 'dinov2'
+  arch: 'vit_base'
+  image_size: 224
+  patch_size: 14
+
+# Training parameters
+training:
+  batch_size: 8
+  epochs: 50
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  scheduler: 'cosine'
+  min_lr: 1e-6
+  warmup_epochs: 5
+  grad_clip: 1.0
+
+# Loss weights
+loss:
+  lambda_depth: 1.0
+  lambda_smooth: 0.1
+  ssi_alpha: 0.5
+  ssi_scales: 4
+
+# Data parameters
+data:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  num_workers: 4
+  pin_memory: true
+
+# Logging
+logging:
+  log_freq: 10
+  save_freq: 5
+  eval_freq: 5
+  visualize_every: 1
+  num_vis_samples: 5
+
+# Paths
+paths:
+  data_dir: './data'
+  checkpoint_dir: './checkpoints/vkitti'
+  log_dir: './logs/vkitti'
+  pretrained_weights: './pretrained_weights/dynov2_teacher.pth'

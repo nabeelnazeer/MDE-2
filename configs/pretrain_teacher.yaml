@@ -1,0 +1,45 @@
+# Configuration for DynoV2 teacher pretraining
+
+# Paths
+data_dir: './data'
+checkpoint_dir: './checkpoints/teacher_pretrain'
+log_dir: './logs/teacher_pretrain'
+pretrained_weights: './pretrained_weights/dynov2_teacher_converted.pth'
+
+# Training parameters
+batch_size: 8  # Reduced batch size for higher resolution
+epochs: 50
+learning_rate: 0.0001  # Reduced learning rate for fine-tuning
+weight_decay: 0.0001
+freeze_encoder: false  # We want to fine-tune the encoder
+resume: null
+
+# Loss parameters
+ssi_alpha: 0.5
+ssi_scales: 4
+lambda_depth: 1.0
+lambda_smooth: 0.1
+grad_clip: 1.0
+
+# Optimization
+warmup_epochs: 5
+scheduler: 'cosine'  # Use cosine learning rate schedule
+min_lr: 1e-6
+
+# Visualization
+visualize_every: 1  # More frequent visualization during pretraining
+num_vis_samples: 5
+
+# Data loading
+num_workers: 4
+pin_memory: true
+
+# Model parameters
+image_size: 224  # Changed from 256 to 224 to be compatible with patch size 14
+patch_size: 14   # DINOv2's default patch size
+arch: 'vit_base'
+
+# Logging
+log_freq: 10
+save_freq: 5
+eval_freq: 5

@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
+data/
+checkpoints/
+logs/
+results/
+pretrained_weights/
+*.pth
+*.ckpt
+wandb/
+runs/
+*.pt
+*.bin   # Some models save weights as .bin
+*.h5    # HDF5 model weights
+*.pkl   # Pickle files
+*.safetensors  # SafeTensors format
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Tensorboard
+events.out.tfevents.*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Debug logs
+*.log
