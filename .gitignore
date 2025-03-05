@@ -34,7 +34,10 @@ ENV/
 *.swo
 
 # Project specific
-data/
+test/
+train/
+val/
+visualization/
 checkpoints/
 logs/
 results/
