@@ -76,6 +76,18 @@ def evaluate_teacher(model, dataloader, device):
     
     return metrics
 
+def print_metrics(metrics, prefix=""):
+    """Print depth estimation metrics in a formatted way"""
+    print(f"\n{prefix} Depth Estimation Metrics:")
+    print("-" * 50)
+    print(f"Abs Relative Error: {metrics['abs_rel']:.4f}")
+    print(f"RMSE: {metrics['rmse']:.4f}")
+    print(f"RMSE log: {metrics['log_rmse']:.4f}")
+    print(f"Sq Relative Error: {metrics['sq_rel']:.4f}")
+    print(f"Accuracy (δ < 1.25): {metrics['delta1']:.4f}")
+    print(f"Accuracy (δ < 1.25²): {metrics['delta2']:.4f}")
+    print(f"Accuracy (δ < 1.25³): {metrics['delta3']:.4f}")
+
 def main():
     args = parse_args()
     
@@ -217,19 +229,40 @@ def main():
         print(f"  Gradient Loss: {val_metrics['gradient']:.4f}")
         print(f"\nLearning Rate: {current_lr:.6f}")
         
-        # Save if best model
+        # Print detailed metrics every 5 epochs and on final epoch
+        if (epoch + 1) % 5 == 0 or epoch == 49:
+            print(f"\n{'='*20} Detailed Evaluation {'='*20}")
+            print(f"Epoch [{epoch+1}/50]")
+            
+            # Evaluate on validation set
+            val_depth_metrics = evaluate_teacher(model, val_loader, device)
+            print_metrics(val_depth_metrics, prefix="Validation")
+            
+            # Log metrics to tensorboard
+            for k, v in val_depth_metrics.items():
+                writer.add_scalar(f'Metrics/{k}', v, epoch)
+        
+        # Save if best model and print metrics
         if val_metrics['total'] < best_val_loss:
             best_val_loss = val_metrics['total']
             save_path = os.path.join(args.checkpoint_dir, 'teacher_best.pth')
+            
+            # Get detailed metrics for best model
+            best_metrics = evaluate_teacher(model, val_loader, device)
+            
             torch.save({
                 'epoch': epoch + 1,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_loss': best_val_loss,
                 'train_metrics': train_metrics,
-                'val_metrics': val_metrics
+                'val_metrics': val_metrics,
+                'depth_metrics': best_metrics
             }, save_path)
-            print(f"\n✓ Saved best model (val_loss: {best_val_loss:.4f})")
+            
+            print("\n" + "="*20 + " New Best Model " + "="*20)
+            print(f"Epoch {epoch+1}")
+            print_metrics(best_metrics, prefix="Best Model")
         
         # Regular checkpoint save
         if (epoch + 1) % 5 == 0:
@@ -242,7 +275,12 @@ def main():
                 'val_metrics': val_metrics
             }, save_path)
 
-    # Save final model
+    # Final evaluation
+    print("\n" + "="*20 + " Final Model Evaluation " + "="*20)
+    final_metrics = evaluate_teacher(model, val_loader, device)
+    print_metrics(final_metrics, prefix="Final")
+    
+    # Save final model with metrics
     final_save_path = os.path.join(args.checkpoint_dir, 'teacher_final.pth')
     torch.save({
         'epoch': 50,
@@ -250,6 +288,11 @@ def main():
         'optimizer_state_dict': optimizer.state_dict(),
         'final_metrics': evaluate_teacher(model, val_loader, device)
     }, final_save_path)
+    
+    # Print training summary
+    print("\n" + "="*20 + " Training Summary " + "="*20)
+    print(f"Best validation loss: {best_val_loss:.4f}")
+    print(f"Final learning rate: {optimizer.param_groups[0]['lr']:.6f}")
     
     writer.close()
     print("Pretraining completed!")
