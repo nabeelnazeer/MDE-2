@@ -8,7 +8,7 @@ pretrained_weights: './pretrained_weights/dynov2_teacher_converted.pth'
 
 # Training parameters
 batch_size: 8  # Reduced batch size for higher resolution
-epochs: 50
+epochs: 20
 learning_rate: 0.0001  # Reduced learning rate for fine-tuning
 weight_decay: 0.0001
 freeze_encoder: false  # We want to fine-tune the encoder

@@ -159,19 +159,15 @@ def main():
         patience=5, verbose=True
     )
     
-    # Create dataloaders
+    # Create dataloaders - removed transform arguments
     train_dataset = DepthDataset(
         data_dir=config['data_dir'],
-        split='train',
-        transform=None,  # Use default transform
-        target_transform=None  # Use default transform
+        split='train'
     )
     
     val_dataset = DepthDataset(
         data_dir=config['data_dir'],
-        split='val',
-        transform=None,  # Use default transform
-        target_transform=None  # Use default transform
+        split='val'
     )
     
     train_loader = DataLoader(

@@ -66,3 +66,6 @@ events.out.tfevents.*
 
 # Debug logs
 *.log
+
+samples/
+outputs/
